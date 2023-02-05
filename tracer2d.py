@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-from matplotlib.backends.backend_pdf import PdfPages
-
 from numba import njit
 import time
+
 
 Nx = 256
 Ny = 256
@@ -73,6 +72,7 @@ uL = np.column_stack([u[:, 0], u[:, :-1]])
 vS = np.row_stack([v[1:, :], v[-1, :]])
 vN = np.row_stack([v[0, :], v[:-1, :]])
 
+
 @njit()
 def upwind_flux_1d_numba(uM, uP, normal, Nx, Ny, tol=0):
     flux = np.zeros((Ny, Nx))
@@ -88,17 +88,19 @@ def upwind_flux_1d_numba(uM, uP, normal, Nx, Ny, tol=0):
                 flux[i, j] = uP[i, j]
     return flux
 
+
 def upwind_flux_1d_numpy(uM, uP, normal, Nx, Ny, tol=0):
     flux = np.zeros((Ny, Nx))
     scaled_uM = normal * uM
 
     msk = scaled_uM > tol
     flux[msk] = uM[msk]
-    
+
     msk = scaled_uM < -tol
     flux[msk] = uP[msk]
-    
+
     return flux
+
 
 wall_t1 = time.perf_counter()
 for j in range(0, NUMSTEPS):
@@ -107,7 +109,7 @@ for j in range(0, NUMSTEPS):
     Tv = T*v
 
     TuR = np.column_stack([Tu[:, 1:], Tu[:, -1]])
-    TuL = np.column_stack([Tu[:, 0] , Tu[:, :-1]])
+    TuL = np.column_stack([Tu[:, 0], Tu[:, :-1]])
 
     TvN = np.row_stack([Tv[1:, :], Tv[-1, :]])
     TvS = np.row_stack([Tv[0, :], Tv[:-1, :]])
@@ -118,20 +120,18 @@ for j in range(0, NUMSTEPS):
 
     Giph = upwind_flux_1d_numba(Tv, TvS, -1, Nx, Ny)
     Gimh = upwind_flux_1d_numba(Tv, TvN, 1, Nx, Ny)
-    
+
     T -= (dt/dx)*(Fjph - Fjmh) + (dt/dy)*(Gimh - Giph)
-    
+
     if j % 100 == 0:
         plotnum = int(j/100) - 1
         subplot = axs[1][plotnum].pcolor(xx/Lx, yy/Ly, T)
         axs[1][plotnum].set_xlabel('x')
-        if plotnum == 0: axs[1][plotnum].set_ylabel('y')
+        if plotnum == 0:
+            axs[1][plotnum].set_ylabel('y')
         axs[1][plotnum].set_title(f"T @ t={int(dt*j)}")
         divider = make_axes_locatable(axs[1][plotnum])
 
-        #cax = divider.append_axes('bottom', size='15%', pad=0.45)
-        #fig.colorbar(subplot, cax=cax, orientation='horizontal', cmap='jet', label='T')
-    
         if plotnum == 1:
             plt.draw()
             plt.savefig("2d_tracer_shear.png", dpi=300)
