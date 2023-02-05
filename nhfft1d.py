@@ -3,10 +3,12 @@ import matplotlib.pyplot as plt
 from scipy.fft import fft, ifft
 
 
+# Derivative operator using Fourier transforms
 def fourier_diff_x(u, ks):
     return np.real(ifft(1.j*ks*fft(u)))
 
 
+# Apply arbitrary fourier-space operator.
 def fourier_op1d(u, op):
     return np.real(ifft(op*fft(u)))
 
@@ -28,7 +30,7 @@ ks = np.hstack((np.arange(0, Nx/2+1), np.arange(-Nx/2+1, 0)))*dk
 kmax = np.max(ks)
 cutoff = 0.65
 kcrit = kmax*cutoff
-f_order = 4 
+f_order = 4
 epsf = 1e-16
 
 myfilt = np.ones((Nx, ))
