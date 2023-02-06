@@ -1,3 +1,8 @@
+'''
+   nhfft1d.py
+   Copyright 2023 Derek Steinmoeller and Marek Stastna
+'''
+
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.fft import fft, ifft
