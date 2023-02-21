@@ -12,9 +12,9 @@ This software is licensed under the Apache 2.0 license. See LICENSE.txt for deta
 
 Ensure your system has the latest version of Python 3 available for your operating system.
 At the time of writing, this is version 3.10 (on the author's system). To install Python 3,
-use your operating system's package manager on Unix-type environments, or windows search
-and install the Anaconda distribution, since this will come pre-installed with almost
-every package you need.
+use your operating system's package manager on Unix-type environments (e.g., `apt` on Debian or Ubuntu), 
+or windows search the web for and install the Anaconda python distribution, since this will
+come pre-installed with almost every package you need.
 
 
 ### Install dependencies
